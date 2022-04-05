@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Comment;
 use App\Entity\News;
 use Doctrine\Common\Collections\Criteria;
+use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -13,23 +14,35 @@ use Doctrine\Persistence\ManagerRegistry;
 
 class MainController extends AbstractController
 {
-    #[Route('/', name: 'app_main')]
-    public function index(ManagerRegistry $doctrine): Response
+    #[Route('/archive/{page}', name: 'archive_page')]
+    public function archive(int $page, ManagerRegistry $doctrine): Response
     {
-        $news = $doctrine->getRepository(News::class)->findAll();
-        $data = array();
-        for ($i = 0; $i < count($news); $i++) {
-            $comments = $news[$i]->getComments();
-            $data[$i]['name'] = $news[$i]->getName();
-            $data[$i]['annotation'] = $news[$i]->getAnnotation();
-            $data[$i]['date'] = $news[$i]->getDate();
-            $data[$i]['commentCount'] = count($comments);
-            $data[$i]['id'] = $news[$i]->getId();
-        }
+        $news = $doctrine->getRepository(News::class)->getPageNews($page);
+
+        $data = LogicController::formData($news);
 
         $session = TemplateController::loadSession();
 
-        $data = LogicController::sortDate($data);
+        $pages = LogicController::formPagination($page, $doctrine);
+
+
+        return $this->render('main/archive.html.twig', [
+            'controller_name' => 'MainController',
+            'data' => $data,
+            'session' => $session,
+            'actual_page' => $page,
+            'pages' => $pages
+        ]);
+    }
+
+    #[Route('/', name: 'app_main')]
+    public function index(ManagerRegistry $doctrine): Response
+    {
+        $news = $doctrine->getRepository(News::class)->getLastNews();
+
+        $data = LogicController::formData($news);
+
+        $session = TemplateController::loadSession();
 
         return $this->render('main/index.html.twig', [
             'controller_name' => 'MainController',

@@ -73,4 +73,39 @@ class NewsRepository extends ServiceEntityRepository
         ;
     }
     */
+    // возвращает 5 новостей, сортированных по дате по убыванию
+    public function getLastNews(): array
+    {
+        return $this->createQueryBuilder('n')
+            ->orderBy('n.date', 'DESC')
+            ->getQuery()
+            ->setMaxResults(5)
+            ->getResult()
+            ;
+    }
+
+    /* возвращает 10 новостей для определенной страницы в архиве новостей
+       $page - номер страницы новостей
+    */
+    public function getPageNews(int $page): array
+    {
+        return $this->createQueryBuilder('n')
+            ->orderBy('n.date', 'DESC')
+            ->getQuery()
+            ->setFirstResult(($page - 1) * 10)
+            ->setMaxResults(10)
+            ->getResult()
+            ;
+    }
+
+    /* возвращает количество новостей в БД
+    */
+    public function getCount(): int
+    {
+        return $this->createQueryBuilder('n')
+            ->select('count(n.id)')
+            ->getQuery()
+            ->getSingleScalarResult()
+            ;
+    }
 }
