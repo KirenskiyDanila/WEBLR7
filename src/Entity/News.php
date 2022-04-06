@@ -137,6 +137,11 @@ class News
         return $this;
     }
 
+    public function getCommentsCount(): string
+    {
+        return count($this->comments);
+    }
+
     public function removeComment(Comment $comment): self
     {
         if ($this->comments->removeElement($comment)) {

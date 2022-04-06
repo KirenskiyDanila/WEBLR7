@@ -73,4 +73,18 @@ class CommentRepository extends ServiceEntityRepository
         ;
     }
     */
+
+    /* Возвращает отсортированный по дате массив комментариев
+       $id - id новости, комментарии которой нужно получить
+    */
+    public function getCommentsById($id): array
+    {
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.news = :id')
+            ->setParameter('id', $id)
+            ->orderBy('c.date', 'DESC')
+            ->getQuery()
+            ->getResult()
+            ;
+    }
 }

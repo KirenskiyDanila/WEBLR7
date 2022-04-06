@@ -20,7 +20,25 @@
                     <a class="d-flex align-items-center col-md-1 mb-1 mb-md-0 text-dark text-decoration-none col-1">
                         <img src="///localhost/WEBLR7/public/images/slow.jpg" alt="mdo" width="65" height="65" class="rounded-circle">
                     </a>
-                    {{ session|raw }}
+                    {% if user_name == null %}
+                        <ul class="nav col-10 col-md-auto mb-2 justify-content-between mb-md-0">
+
+                            <li><a href="//localhost/WEBLR7/public/archive/1" class="nav-link px-2 link-secondary h4">Архив новостей</a></li>
+                            <li><a href="//localhost/WEBLR7/public/#" class="nav-link px-2 link-secondary h4 mx-4">Главная страница</a></li>
+
+                        </ul>
+
+                        <div class="col-md-4 text-end">
+                            <button type="button" class="btn btn-outline-primary me-2">Login</button>
+                            <button type="button" class="btn btn-primary">Sign-up</button>
+                        </div>
+                    {% else %}
+                        <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
+                            <li><a href="//localhost/WEBLR7/public/archive/1" class="nav-link px-2 link-secondary h4">Архив новостей</a></li>
+                            <li><a href="#" class="nav-link px-2 link-secondary h4">Новостной сайт</a></li>
+                            <li><a href="#" class="nav-link px-2 link-secondary h4">Приветствуем, {{ user_name }}</a></li>
+                        </ul>
+                    {% endif %}
                 </header>
         </div>
 
